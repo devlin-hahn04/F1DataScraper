@@ -4,10 +4,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-driver2= webdriver.Chrome()
-driver2.get("https://www.formula1.com/en/results/2025/team")
-
-
 def getWDC():
 
     driver = webdriver.Chrome()
