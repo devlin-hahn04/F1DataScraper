@@ -3,16 +3,18 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-driver1 = webdriver.Chrome()
-driver1.get("https://www.formula1.com/en/results/2025/drivers")
 
 driver2= webdriver.Chrome()
 driver2.get("https://www.formula1.com/en/results/2025/team")
 
 
-def getWDC(driver1):
+def getWDC():
+
+    driver = webdriver.Chrome()
+    driver.get("https://www.formula1.com/en/results/2025/drivers")
+
     # Wait until at least one driver row is visible
-    rows = WebDriverWait(driver1, 20).until(
+    rows = WebDriverWait(driver, 20).until(
         EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "table tbody tr"))
     )
 
@@ -29,13 +31,18 @@ def getWDC(driver1):
         driver_map[name]= points
         
 
-    driver1.quit()
+    driver.quit()
     return driver_map
 
 
-def getWCC(driver2):
+def getWCC():
+
+    driver= webdriver.Chrome()
+    driver.get("https://www.formula1.com/en/results/2025/team")
+
+
     # Wait until at least one driver row is visible
-    rows = WebDriverWait(driver2, 20).until(
+    rows = WebDriverWait(driver, 20).until(
         EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "table tbody tr"))
     )
 
@@ -51,18 +58,18 @@ def getWCC(driver2):
         points = tds[-1].text.strip()
         team_map[name]= points
 
-    driver2.quit()
+    driver.quit()
     return team_map
     
 
-print("Drivers Champ")
+# print("Drivers Champ")
 
-drivers= getWDC(driver1)
-print(drivers)
+# drivers= getWDC()
+# print(drivers)
 
-print()
+# print()
 
-print("Constructors Champ")
+# print("Constructors Champ")
 
-teams= getWCC(driver2)
-print(teams)
+# teams= getWCC()
+# print(teams)
