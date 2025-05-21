@@ -4,7 +4,7 @@ and exposes them via a simple Flask-based REST API. Built for integration into a
 
 ## Features
 
-- 🧑‍✈️ Get current Drivers’ standings with names and points
+- 💨 Get current Drivers’ standings with names and points
 - 🏁 Get current Constructors’ standings with team names and points
 - 🔁 Uses Selenium WebDriver to scrape live data from the F1 site
 - 🛠️ Built with Python and Flask
