@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: f1-scraper-api                # You can change this to your app name
+    env: python
+    plan: free
+    buildCommand: ./build.sh           # This installs Chromium + Chromedriver
+    startCommand: python app.py        # This starts your Flask server
+    autoDeploy: true                   # Optional: auto-deploy on git push
