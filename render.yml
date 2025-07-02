@@ -3,6 +3,6 @@ services:
     name: f1-scraper-api                # You can change this to your app name
     env: python
     plan: free
-    buildCommand: ./build.sh           # This installs Chromium + Chromedriver
+    buildCommand: ./build.sh && pip install -r requirements.txt
     startCommand: gunicorn app:app --bind 0.0.0.0:5000
     autoDeploy: true                   # Optional: auto-deploy on git push
