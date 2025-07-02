@@ -4,5 +4,5 @@ services:
     env: python
     plan: free
     buildCommand: ./build.sh           # This installs Chromium + Chromedriver
-    startCommand: gunicorn F1DataScraper.wsgi:app --bind 0.0.0.0:5000      # This starts your Flask server
+    startCommand: gunicorn app:app --bind 0.0.0.0:5000
     autoDeploy: true                   # Optional: auto-deploy on git push
