@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Update package lists
 apt-get update
-
-# Install Chromium and Chromedriver
 apt-get install -y chromium-browser chromium-chromedriver
+
+echo "Chromium location: $(which chromium-browser)"
+echo "Chromedriver location: $(which chromedriver)"

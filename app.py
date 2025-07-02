@@ -1,6 +1,7 @@
 from flask import Flask, Response
 from F1Scaper import getWDC, getWCC
 import json
+import shutil
 
 app= Flask(__name__)
 
@@ -30,17 +31,15 @@ def teams():
         return Response(json.dumps({"error": str(e)}), content_type='application/json', status=500)
     
 
-@app.route('/debug')
+@app.route('/debug', methods=['GET'])
 
 def debug():
-    import subprocess
-    chromedriver = subprocess.run(['which', 'chromedriver'], capture_output=True, text=True).stdout.strip()
-    chromium = subprocess.run(['which', 'chromium-browser'], capture_output=True, text=True).stdout.strip()
+    chromium_path = shutil.which('chromium-browser') or shutil.which('chromium')
+    chromedriver_path = shutil.which('chromedriver')
     return {
-        'chromedriver_path': chromedriver,
-        'chromium_path': chromium
+        "chromedriver_path": chromedriver_path or "",
+        "chromium_path": chromium_path or ""
     }
-
     
 
 if __name__ == '__main__':
