@@ -3,17 +3,18 @@ name: Run F1 Scraper and API
 on:
   push:
     branches: [main]
-  workflow_dispatch:
+  workflow_dispatch:  # allows manual triggering
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Python 3.10
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
@@ -27,53 +28,14 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y chromium-browser chromium-chromedriver
+        sudo apt-get install -y --no-install-recommends chromium-browser chromium-chromedriver
 
-    - name: Verify Chromium and ChromeDriver paths
+
+    - name: Check Chromium and ChromeDriver locations
       run: |
         which chromium-browser
-        chromium-browser --version
         which chromedriver
-        chromedriver --version
 
-    - name: Run scraper and save data.json
+    - name: Run scraper (prints WDC and WCC)
       run: |
-        python save_data.py  # your script that calls save_data() and creates data.json
-
-    - name: Verify data.json exists
-      run: |
-        if [ ! -f data.json ]; then
-          echo "data.json not found!"
-          exit 1
-        fi
-
-    - name: List files after scraping
-      run: ls -la
-
-    - name: Show data.json contents
-      run: cat data.json
-
-    - name: Configure git
-      run: |
-        git config user.name "github-actions"
-        git config user.email "github-actions@github.com"
-
-    - name: Clean workspace before checkout
-      run: git clean -fdx
-
-    - name: Fetch and checkout gh-pages branch or create it
-      run: |
-        git fetch origin
-        git checkout gh-pages || git checkout --orphan gh-pages
-
-    - name: List files on gh-pages branch
-      run: ls -la
-
-    - name: Copy data.json and commit
-      run: |
-        cp ../data.json ./data.json
-        git add data.json
-        git commit -m "Update scraped data" || echo "No changes to commit"
-
-    - name: Push to gh-pages
-      run: |
-        git push origin gh-pages --force
+        python -c "from F1Scaper import getWDC, getWCC; print('WDC:', getWDC()); print('WCC:', getWCC())"
