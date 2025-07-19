@@ -39,6 +39,12 @@ jobs:
       run: |
         python save_data.py  # your script that calls save_data() and creates data.json
 
+    - name: List files after scraping
+      run: ls -la
+
+    - name: Show data.json contents
+      run: cat data.json
+
     - name: Configure git
       run: |
         git config user.name "github-actions"
@@ -48,6 +54,9 @@ jobs:
       run: |
         git fetch origin gh-pages || true
         git checkout gh-pages || git checkout --orphan gh-pages
+
+    - name: List files on gh-pages branch
+      run: ls -la
 
     - name: Copy data.json and commit
       run: |
