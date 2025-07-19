@@ -3,7 +3,7 @@ name: Run F1 Scraper and API
 on:
   push:
     branches: [main]
-  workflow_dispatch:  # Allows manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   build:
@@ -35,6 +35,26 @@ jobs:
         which chromedriver
         chromedriver --version
 
-    - name: Run scraper (prints WDC and WCC)
+    - name: Run scraper and save data.json
       run: |
-        python -c "from F1Scaper import getWDC, getWCC; print('WDC:', getWDC()); print('WCC:', getWCC())"
+        python save_data.py  # your script that calls save_data() and creates data.json
+
+    - name: Configure git
+      run: |
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+
+    - name: Checkout gh-pages branch or create it
+      run: |
+        git fetch origin gh-pages || true
+        git checkout gh-pages || git checkout --orphan gh-pages
+
+    - name: Copy data.json and commit
+      run: |
+        cp data.json ./data.json
+        git add data.json
+        git commit -m "Update scraped data" || echo "No changes to commit"
+
+    - name: Push to gh-pages
+      run: |
+        git push origin gh-pages --force
