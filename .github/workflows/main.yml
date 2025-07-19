@@ -35,6 +35,26 @@ jobs:
         which chromedriver
         chromedriver --version
 
-    - name: Run scraper (prints WDC and WCC)
+    - name: Run scraper and save data
       run: |
-        python -c "from F1Scaper import getWDC, getWCC; print('WDC:', getWDC()); print('WCC:', getWCC())"
+        python save_data.py  # make sure this script calls your save_data() function and creates data.json
+
+    - name: Configure git
+      run: |
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+
+    - name: Checkout gh-pages branch or create it
+      run: |
+        git fetch origin gh-pages || true
+        git checkout gh-pages || git checkout --orphan gh-pages
+
+    - name: Copy data.json and commit
+      run: |
+        cp data.json ./data.json
+        git add data.json
+        git commit -m "Update scraped data" || echo "No changes to commit"
+
+    - name: Push to gh-pages
+      run: |
+        git push origin gh-pages --force

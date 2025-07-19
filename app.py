@@ -2,8 +2,21 @@ from flask import Flask, Response
 from F1Scaper import getWDC, getWCC
 import json
 import shutil
+import os 
 
 app= Flask(__name__)
+
+def save_data():   #saving data to github pages as json
+    wdc = getWDC()
+    wcc = getWCC()
+    all_data = {
+        "drivers_championship": wdc,
+        "constructors_championship": wcc,
+    }
+    with open('data.json', 'w') as f:
+        json.dump(all_data, f)
+
+
 
 @app.route('/api/drivers', methods=['GET'])
 
@@ -43,4 +56,5 @@ def debug():
     
 
 if __name__ == '__main__':
+    save_data()   #saving json file
     app.run(debug= True, host= "0.0.0.0", port= 5000)
