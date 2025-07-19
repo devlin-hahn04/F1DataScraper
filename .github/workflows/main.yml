@@ -39,6 +39,12 @@ jobs:
       run: |
         python save_data.py  # make sure this script calls your save_data() function and creates data.json
 
+    - name: Debug files in workspace
+      run: ls -la
+
+    - name: Show contents of data.json
+      run: cat data.json
+
     - name: Configure git
       run: |
         git config user.name "github-actions"
