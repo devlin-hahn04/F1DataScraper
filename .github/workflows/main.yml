@@ -39,6 +39,13 @@ jobs:
       run: |
         python save_data.py  # your script that calls save_data() and creates data.json
 
+    - name: Verify data.json exists
+      run: |
+        if [ ! -f data.json ]; then
+          echo "data.json not found!"
+          exit 1
+        fi
+
     - name: List files after scraping
       run: ls -la
 
@@ -50,9 +57,12 @@ jobs:
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
 
-    - name: Checkout gh-pages branch or create it
+    - name: Clean workspace before checkout
+      run: git clean -fdx
+
+    - name: Fetch and checkout gh-pages branch or create it
       run: |
-        git fetch origin gh-pages || true
+        git fetch origin
         git checkout gh-pages || git checkout --orphan gh-pages
 
     - name: List files on gh-pages branch
@@ -60,7 +70,7 @@ jobs:
 
     - name: Copy data.json and commit
       run: |
-        cp data.json ./data.json
+        cp ../data.json ./data.json
         git add data.json
         git commit -m "Update scraped data" || echo "No changes to commit"
 
