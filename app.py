@@ -5,16 +5,6 @@ import shutil
 
 app = Flask(__name__)
 
-def save_data():
-    # This function saves the scraped data to data.json file
-    wdc = getWDC()
-    wcc = getWCC()
-    all_data = {
-        "drivers_championship": wdc,
-        "constructors_championship": wcc,
-    }
-    with open('data.json', 'w') as f:
-        json.dump(all_data, f)
 
 @app.route('/api/drivers', methods=['GET'])
 def drivers():
