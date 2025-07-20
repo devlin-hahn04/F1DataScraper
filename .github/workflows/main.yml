@@ -18,6 +18,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Debug environment variables
+      run: |
+        echo "SUPABASE_URL is $SUPABASE_URL"
+        echo "SUPABASE_SERVICE_ROLE_KEY is $SUPABASE_SERVICE_ROLE_KEY"
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
@@ -33,7 +38,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y chromium-browser chromium-chromedriver
         sudo apt-get install -y --no-install-recommends chromium-browser chromium-chromedriver
-
 
     - name: Check Chromium and ChromeDriver locations
       run: |

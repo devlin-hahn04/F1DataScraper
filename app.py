@@ -22,12 +22,13 @@ if not url or not key:
 supabase = create_client(url, key)
 
 def save_to_supabase(all_data):
-    # Insert the JSON data into your table (must exist in Supabase)
-    response = supabase.table('f1_data').insert({"data": all_data}).execute()
+    test_data = {"test": "hello world"}
+    response = supabase.table('f1_data').insert({"data": test_data}).execute()
     if response.error:
         print("Error inserting data:", response.error)
     else:
         print("Data inserted successfully")
+
 
 def save_data():
     wdc = getWDC()
