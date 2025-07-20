@@ -24,11 +24,18 @@ def save_to_supabase(all_data):
 def save_data():
     wdc = getWDC()
     wcc = getWCC()
+
+    # Sort both dictionaries by descending point values
+    wdc_sorted = dict(sorted(wdc.items(), key=lambda item: int(item[1]), reverse=True))
+    wcc_sorted = dict(sorted(wcc.items(), key=lambda item: int(item[1]), reverse=True))
+
     all_data = {
-        "drivers_championship": wdc,
-        "constructors_championship": wcc,
+        "drivers_championship": wdc_sorted,
+        "constructors_championship": wcc_sorted,
     }
+
     save_to_supabase(all_data)
+
 
 if __name__ == "__main__":
     save_data()
