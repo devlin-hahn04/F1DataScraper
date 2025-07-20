@@ -15,10 +15,11 @@ supabase = create_client(url, key)
 
 def save_to_supabase(all_data):
     response = supabase.table('f1_data').insert({"data": all_data}).execute()
-    if response.error:
-        print("Error inserting data:", response.error)
+    if response.data:
+        print("Data inserted successfully:", response.data)
     else:
-        print("Data inserted successfully")
+        print("Insert may have failed. Raw response:", response)
+
 
 def save_data():
     wdc = getWDC()
