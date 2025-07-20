@@ -47,3 +47,6 @@ jobs:
     - name: Run scraper (prints WDC and WCC)
       run: |
         python -c "from F1Scaper import getWDC, getWCC; print('WDC:', getWDC()); print('WCC:', getWCC())"
+
+    - name: Save scraped data to Supabase
+      run: python save_data.py
