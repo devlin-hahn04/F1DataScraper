@@ -9,6 +9,8 @@ import os
 from datetime import datetime
 import pandas as pd
 
+import requests
+
 
 # Setup Selenium Chrome options
 def get_chrome_options():
@@ -94,3 +96,16 @@ def nextrace():
 
     return "No upcoming races found."
 
+
+def getDriverPhotos():
+    url= "https://api.openf1.org/v1/drivers?session_key=latest"
+    drivers= requests.get(url).json()
+
+    driverPhoto_map: dict[str, str]= {}
+
+    for d in drivers:
+        if d.get("headshot_url"):
+            last_name = d["full_name"].split()[-1].title()
+            driverPhoto_map[last_name] = d["headshot_url"]
+
+    return driverPhoto_map

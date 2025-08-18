@@ -48,5 +48,13 @@ jobs:
       run: |
         python -c "from F1Scaper import getWDC, getWCC; print('WDC:', getWDC()); print('WCC:', getWCC())"
 
+    - name: Print next race
+      run: |
+        python -c "from F1Scraper import nextrace; print('Next Race:', nextrace())"
+
+    - name: Print driver photos 
+      run: |
+        python -c "from F1Scraper import getDriverPhotos; photos= getDriverPhotos(); print('Driver Photos:', photos)"
+
     - name: Save scraped data to Supabase
       run: python save_data.py
