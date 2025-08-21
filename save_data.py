@@ -28,8 +28,8 @@ def save_data():
     driver_photos= getDriverPhotos()
 
     # Sort both dictionaries by descending point values and convert to list of dicts
-    wdc_sorted = sorted(wdc.items(), key=lambda item: int(item[1]), reverse=True)
-    wdc_sorted_list = [{"driver": k, "points": int(v)} for k, v in wdc_sorted]
+    wdc_sorted = sorted(wdc.items(), key=lambda item: item[1]["points"], reverse=True)
+    wdc_sorted_list = [{"driver": k, "team": v["team"], "points": v["points"]}for k, v in wdc_sorted]
 
     wcc_sorted = sorted(wcc.items(), key=lambda item: int(item[1]), reverse=True)
     wcc_sorted_list = [{"team": k, "points": int(v)} for k, v in wcc_sorted]
