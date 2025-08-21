@@ -35,7 +35,17 @@ def getWDC():
 
     try:
         name_idx = headers.index("driver")
-        team_idx = headers.index("car")   # team is under "Car"
+
+        # handle variations in team column
+        if "car" in headers:
+            team_idx = headers.index("car")
+        elif "team" in headers:
+            team_idx = headers.index("team")
+        elif "entrant" in headers:
+            team_idx = headers.index("entrant")
+        else:
+            raise ValueError("Could not find team column")
+
         points_idx = headers.index("pts")
     except ValueError as e:
         driver.quit()
