@@ -39,7 +39,7 @@ def getWDC():
             continue
 
         name = tds[1].text.strip()   # Driver column
-        team = tds[2].text.strip()   # Team/Car column
+        team = tds[3].text.strip()   # Team/Car column
         points = int(tds[-1].text.strip())  # Last column is always points
 
         driver_map[name] = {
