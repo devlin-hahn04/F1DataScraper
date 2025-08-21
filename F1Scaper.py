@@ -27,31 +27,6 @@ def getWDC():
     driver = webdriver.Chrome(options=get_chrome_options())
     driver.get("https://www.formula1.com/en/results/2025/drivers")
 
-    # Grab header to find correct column indices
-    header_cells = WebDriverWait(driver, 20).until(
-        EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "table thead tr th"))
-    )
-    headers = [h.text.strip().lower() for h in header_cells]
-
-    try:
-        name_idx = headers.index("driver")
-
-        # handle variations in team column
-        if "car" in headers:
-            team_idx = headers.index("car")
-        elif "team" in headers:
-            team_idx = headers.index("team")
-        elif "entrant" in headers:
-            team_idx = headers.index("entrant")
-        else:
-            raise ValueError("Could not find team column")
-
-        points_idx = headers.index("pts")
-    except ValueError as e:
-        driver.quit()
-        raise RuntimeError("Could not find expected headers in standings table") from e
-
-    # Parse rows
     rows = WebDriverWait(driver, 20).until(
         EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "table tbody tr"))
     )
@@ -60,23 +35,23 @@ def getWDC():
 
     for row in rows:
         tds = row.find_elements(By.TAG_NAME, "td")
-        if len(tds) <= max(name_idx, team_idx, points_idx):
+        if len(tds) < 4:  # Make sure enough columns exist
             continue
 
-        name = tds[name_idx].text.strip()
-        team = tds[team_idx].text.strip()
-        points = int(tds[points_idx].text.strip())
+        name = tds[1].text.strip()   # Driver column
+        team = tds[2].text.strip()   # Team/Car column
+        points = int(tds[-1].text.strip())  # Last column is always points
 
         driver_map[name] = {
-            "points": points,
-            "team": team
+            "team": team,
+            "points": points
         }
 
-        # Print for testing
         print(f"{name} | Team: {team} | Points: {points}")
 
     driver.quit()
     return driver_map
+
 
 
 # Get World Constructors' Championship standings
