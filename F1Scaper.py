@@ -22,25 +22,48 @@ def get_chrome_options():
     return chrome_options
 
 
-# Get World Drivers' Championship standings
+# Get World Drivers' Championship standings (with team)
 def getWDC():
     driver = webdriver.Chrome(options=get_chrome_options())
     driver.get("https://www.formula1.com/en/results/2025/drivers")
 
+    # Grab header to find correct column indices
+    header_cells = WebDriverWait(driver, 20).until(
+        EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "table thead tr th"))
+    )
+    headers = [h.text.strip().lower() for h in header_cells]
+
+    try:
+        name_idx = headers.index("driver")
+        team_idx = headers.index("car")   # team is under "Car"
+        points_idx = headers.index("pts")
+    except ValueError as e:
+        driver.quit()
+        raise RuntimeError("Could not find expected headers in standings table") from e
+
+    # Parse rows
     rows = WebDriverWait(driver, 20).until(
         EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "table tbody tr"))
     )
 
-    driver_map: dict[str, str] = {}
+    driver_map: dict[str, dict[str, str]] = {}
 
     for row in rows:
         tds = row.find_elements(By.TAG_NAME, "td")
-        if len(tds) < 2:
+        if len(tds) <= max(name_idx, team_idx, points_idx):
             continue
 
-        name = tds[1].text.strip()
-        points = tds[-1].text.strip()
-        driver_map[name] = points
+        name = tds[name_idx].text.strip()
+        team = tds[team_idx].text.strip()
+        points = int(tds[points_idx].text.strip())
+
+        driver_map[name] = {
+            "points": points,
+            "team": team
+        }
+
+        # Print for testing
+        print(f"{name} | Team: {team} | Points: {points}")
 
     driver.quit()
     return driver_map
@@ -98,10 +121,10 @@ def nextrace():
 
 
 def getDriverPhotos():
-    url= "https://api.openf1.org/v1/drivers?session_key=latest"
-    drivers= requests.get(url).json()
+    url = "https://api.openf1.org/v1/drivers?session_key=latest"
+    drivers = requests.get(url).json()
 
-    driverPhoto_map: dict[str, str]= {}
+    driverPhoto_map: dict[str, str] = {}
 
     for d in drivers:
         if d.get("headshot_url"):
@@ -109,3 +132,5 @@ def getDriverPhotos():
             driverPhoto_map[last_name] = d["headshot_url"]
 
     return driverPhoto_map
+
+

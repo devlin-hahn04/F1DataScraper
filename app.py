@@ -9,6 +9,7 @@ app = Flask(__name__)
 def drivers():
     try:
         data = getWDC()
+        # print(data)
         return Response(json.dumps(data), content_type="application/json")
     except Exception as e:
         return Response(json.dumps({"error": str(e)}), content_type="application/json", status=500)
@@ -54,3 +55,5 @@ def debug():
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5000)
+
+    
