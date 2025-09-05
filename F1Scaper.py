@@ -111,8 +111,12 @@ def getDriverPhotos():
 
     driverPhoto_map: dict[str, str] = {}
 
-    for d in drivers:
-        if d.get("headshot_url"):
+    if isinstance(drivers, dict):   #making sure response is a list 
+        print("Unexpected response:", drivers)
+        return driverPhoto_map
+
+    for d in drivers:     #making sure each item is a dict 
+        if isinstance(d, dict) and d.get("headshot_url"):
             last_name = d["full_name"].split()[-1].title()
             driverPhoto_map[last_name] = d["headshot_url"]
 
