@@ -13,6 +13,7 @@ if not url or not key:
 
 supabase = create_client(url, key)
 
+
 def save_to_supabase(all_data):
     response = supabase.table('f1_data').insert({"data": all_data}).execute()
     if response.data:
@@ -24,12 +25,15 @@ def save_to_supabase(all_data):
 def save_data():
     wdc = getWDC()
     wcc = getWCC()
-    next_gp= nextrace()
-    driver_photos= getDriverPhotos()
+    next_gp = nextrace()
+    driver_photos = getDriverPhotos()
 
-    # Sort both dictionaries by descending point values and convert to list of dicts
+    # Sort both dictionaries
     wdc_sorted = sorted(wdc.items(), key=lambda item: item[1]["points"], reverse=True)
-    wdc_sorted_list = [{"driver": k, "team": v["team"], "points": v["points"]}for k, v in wdc_sorted]
+    wdc_sorted_list = [
+        {"driver": k, "team": v["team"], "points": v["points"]}
+        for k, v in wdc_sorted
+    ]
 
     wcc_sorted = sorted(wcc.items(), key=lambda item: int(item[1]), reverse=True)
     wcc_sorted_list = [{"team": k, "points": int(v)} for k, v in wcc_sorted]
@@ -38,10 +42,11 @@ def save_data():
         "drivers_championship": wdc_sorted_list,
         "constructors_championship": wcc_sorted_list,
         "next_race": next_gp,
-        "driver_photos": driver_photos
+        "driver_photos": driver_photos   # stays as separate dict
     }
 
     save_to_supabase(all_data)
+
 
 
 if __name__ == "__main__":
