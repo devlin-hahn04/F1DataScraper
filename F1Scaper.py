@@ -117,7 +117,7 @@ def getDriverPhotos():
 
     for d in drivers:
         if isinstance(d, dict) and d.get("headshot_url") and d.get("full_name"):
-            last_name = d["full_name"].split()[-1]
+            last_name = d["full_name"].split()[-1].capitalize()
             driverPhoto_map[last_name] = d["headshot_url"]
 
     return driverPhoto_map
