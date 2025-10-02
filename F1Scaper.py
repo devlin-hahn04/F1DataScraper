@@ -128,13 +128,23 @@ def getTeamLogos():
     driver.get("https://www.formula1.com/en/teams.html")
 
     logos_map = {}
-    elements = driver.find_elements(By.CSS_SELECTOR, ".team-car-logo img")
-    for el in elements:
-        team_name = el.get_attribute("alt").strip()
-        logo_url = el.get_attribute("src") or el.get_attribute("data-src")
-        if team_name and logo_url:
-            logos_map[team_name] = logo_url.strip()
+
+    # Each team section (container)
+    containers = driver.find_elements(By.CSS_SELECTOR, "div.flex.flex-col.gap-\\[22px\\]")
+
+    for c in containers:
+        try:
+            # team name (usually first span inside container with text)
+            team_name = c.find_element(By.CSS_SELECTOR, "span.flex.flex-col").text.strip()
+            # logo (img inside the container)
+            logo_url = c.find_element(By.CSS_SELECTOR, "img").get_attribute("src")
+
+            if team_name and logo_url:
+                logos_map[team_name] = logo_url
+        except Exception:
+            continue
 
     driver.quit()
     return logos_map
+
 
