@@ -1,5 +1,5 @@
 from flask import Flask, Response
-from F1Scaper import getWDC, getWCC, nextrace, getDriverPhotos
+from F1Scaper import getWDC, getWCC, nextrace, getDriverPhotos, getTeamLogos
 import json
 import shutil
 
@@ -39,6 +39,16 @@ def driver_photos():
         return Response(json.dumps({"driver_photos": photos}), content_type="application/json")
     except Exception as e:
         return Response(json.dumps({"error": str(e)}), content_type="application/json", status=500)
+    
+@app.route('/api/teamlogos', methods=['GET'])
+def team_logos():
+    try:
+        logos= getTeamLogos()
+        return Response(json.dumps({"driver_photos": logos}), content_type="application/json")
+    except Exception as e:
+        return Response(json.dumps({"error": str(e)}), content_type="application/json", status=500)
+    
+
 
 
 

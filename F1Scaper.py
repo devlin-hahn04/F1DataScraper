@@ -123,4 +123,20 @@ def getDriverPhotos():
     return driverPhoto_map
 
 
+def getTeamLogos():
+    url = "https://api.openf1.org/v1/constructors"
+    teams = requests.get(url).json()
 
+    teamLogo_map: dict[str, str] = {}
+
+    if isinstance(teams, dict):
+        print("Unexpected response:", teams)
+        return teamLogo_map
+
+    for t in teams:
+        if isinstance(t, dict) and t.get("constructor_name") and t.get("logo_url"):
+            name = t["constructor_name"].strip()
+            logo = t["logo_url"].strip()
+            teamLogo_map[name] = logo
+
+    return teamLogo_map
