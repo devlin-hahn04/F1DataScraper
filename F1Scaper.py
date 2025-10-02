@@ -124,19 +124,17 @@ def getDriverPhotos():
 
 
 def getTeamLogos():
-    url = "https://api.openf1.org/v1/constructors"
-    teams = requests.get(url).json()
+    driver = webdriver.Chrome(options=get_chrome_options())
+    driver.get("https://www.formula1.com/en/teams.html")
 
-    teamLogo_map: dict[str, str] = {}
+    logos_map = {}
+    elements = driver.find_elements(By.CSS_SELECTOR, ".team-car-logo img")
+    for el in elements:
+        team_name = el.get_attribute("alt").strip()
+        logo_url = el.get_attribute("src") or el.get_attribute("data-src")
+        if team_name and logo_url:
+            logos_map[team_name] = logo_url.strip()
 
-    if isinstance(teams, dict):
-        print("Unexpected response:", teams)
-        return teamLogo_map
+    driver.quit()
+    return logos_map
 
-    for t in teams:
-        if isinstance(t, dict) and t.get("constructor_name") and t.get("logo_url"):
-            name = t["constructor_name"].strip()
-            logo = t["logo_url"].strip()
-            teamLogo_map[name] = logo
-
-    return teamLogo_map
