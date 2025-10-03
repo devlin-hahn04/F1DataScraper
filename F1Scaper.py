@@ -17,11 +17,12 @@ import requests
 def get_chrome_options():
     chrome_options = Options()
     chrome_options.binary_location = "/usr/bin/chromium-browser"
-    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless")  # Comment out to debug visually
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
     return chrome_options
-
 
 # Get World Drivers' Championship standings (with team)
 def getWDC():
@@ -130,7 +131,13 @@ def getTeamLogos():
 
     logos_map = {}
     try:
-        # Wait for team containers (flex elements containing team info)
+        # Wait for a logo or team name to ensure the page is loaded
+        WebDriverWait(driver, 20).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "img[src*='mercedes'], img[src*='mclaren']"))
+        )
+        print("Page loaded, looking for team sections...")
+
+        # Target team containers based on the consistent flex layout
         team_containers = WebDriverWait(driver, 20).until(
             EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "span.flex.flex-col.lg\\:flex-row"))
         )
@@ -138,9 +145,9 @@ def getTeamLogos():
 
         for container in team_containers:
             try:
-                # Extract team name (from the <p> or <span> with typography class)
+                # Extract team name (rely on the typography class)
                 team_name = container.find_element(By.CSS_SELECTOR, "p.typography-module_display-1-bold").text.strip()
-                # Extract logo image
+                # Extract logo image (rely on the teamlogo class)
                 logo = container.find_element(By.CSS_SELECTOR, "span.Teamlogo-module_teamlogo__1A3j1 img")
                 logo_url = logo.get_attribute("src")
 
@@ -152,7 +159,7 @@ def getTeamLogos():
                 continue
 
     except TimeoutException as e:
-        print("Timeout waiting for team containers. Page source:", driver.page_source[:1000])
+        print("Timeout waiting for page or containers. Page source:", driver.page_source[:1000])
         driver.save_screenshot("debug_screenshot.png")
     finally:
         driver.quit()
