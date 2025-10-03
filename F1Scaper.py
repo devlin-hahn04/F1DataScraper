@@ -125,53 +125,36 @@ def getDriverPhotos():
     return driverPhoto_map
 
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.chrome.options import Options
-
-def get_chrome_options():
-    chrome_options = Options()
-    chrome_options.binary_location = "/usr/bin/chromium-browser"
-    # chrome_options.add_argument("--headless")  # Comment out for local debugging
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
-    return chrome_options
-
 def getTeamLogos():
     driver = webdriver.Chrome(options=get_chrome_options())
     driver.get("https://www.formula1.com/en/teams")
 
     logos_map = {}
     try:
-        # Wait for page to load
+        # Wait for a general page load indicator
         WebDriverWait(driver, 20).until(
             EC.presence_of_element_located((By.TAG_NAME, "body"))
         )
         print("Page body loaded, waiting for team content...")
 
-        # Target team containers (match the working number of 10)
+        # Target team containers
         team_containers = WebDriverWait(driver, 20).until(
             EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "span.flex.flex-col.lg\\:flex-row"))
         )
         print(f"Found {len(team_containers)} team containers")
 
-        for i, container in enumerate(team_containers, 1):
+        for container in team_containers:
             try:
-                # Log container HTML for debugging
-                container_html = container.get_attribute('outerHTML')[:500]
-                print(f"Container {i} HTML: {container_html}")
+                # Log the container's HTML for debugging
+                container_html = container.get_attribute('outerHTML')[:500]  # Limit to 500 chars
+                print(f"Processing container: {container_html}")
 
-                # Extract team name (try a flexible approach)
+                # Extract team name with flexible XPath
                 team_name = None
                 try:
-                    team_name = container.find_element(By.XPATH, ".//p | .//span | .//h1 | .//h2 | .//h3").text.strip()
+                    team_name = container.find_element(By.XPATH, ".//p[contains(@class, 'typography-module_display')] | .//span | .//h1 | .//h2 | .//h3").text.strip()
                 except:
-                    print(f"Container {i}: No team name found in {container_html}")
+                    print(f"No team name found in container: {container_html}")
                     continue
 
                 # Extract logo image
@@ -182,7 +165,7 @@ def getTeamLogos():
                     logos_map[team_name] = logo_url
                     print(f"Team: {team_name}, Logo: {logo_url}")
             except Exception as e:
-                print(f"Container {i} Error: {e}")
+                print(f"Error processing team container: {e}")
                 continue
 
     except TimeoutException as e:
