@@ -145,16 +145,17 @@ def getTeamLogos():
 
         for container in team_containers:
             try:
-                # Extract team name with flexible selector
+                # Log the container's HTML for debugging
+                container_html = container.get_attribute('outerHTML')[:500]  # Limit to 500 chars
+                print(f"Processing container: {container_html}")
+
+                # Extract team name with flexible XPath
                 team_name = None
                 try:
-                    team_name = container.find_element(By.CSS_SELECTOR, "p.typography-module_display-1-bold").text.strip()
+                    team_name = container.find_element(By.XPATH, ".//p[contains(@class, 'typography-module_display')] | .//span | .//h1 | .//h2 | .//h3").text.strip()
                 except:
-                    try:
-                        team_name = container.find_element(By.CSS_SELECTOR, "p, span, h1, h2, h3").text.strip()
-                    except:
-                        print(f"No team name found in container: {container.get_attribute('outerHTML')[:200]}")
-                        continue
+                    print(f"No team name found in container: {container_html}")
+                    continue
 
                 # Extract logo image
                 logo = container.find_element(By.CSS_SELECTOR, "span.Teamlogo-module_teamlogo__1A3j1 img")
@@ -173,5 +174,4 @@ def getTeamLogos():
     finally:
         driver.quit()
     return logos_map
-
 
