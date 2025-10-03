@@ -44,7 +44,7 @@ def driver_photos():
 def team_logos():
     try:
         logos= getTeamLogos()
-        return Response(json.dumps({"driver_photos": logos}), content_type="application/json")
+        return Response(json.dumps({"team_logos": logos}), content_type="application/json")
     except Exception as e:
         return Response(json.dumps({"error": str(e)}), content_type="application/json", status=500)
     

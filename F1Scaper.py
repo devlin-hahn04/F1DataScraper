@@ -125,12 +125,13 @@ def getDriverPhotos():
 
 def getTeamLogos():
     driver = webdriver.Chrome(options=get_chrome_options())
-    driver.get("https://www.formula1.com/en/teams.html")
+    driver.get("https://www.formula1.com/en/teams")  # Remove .html
+
+    containers = WebDriverWait(driver, 20).until(
+        EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "div.flex.flex-col.gap-\\[22px\\]"))
+    )
 
     logos_map = {}
-
-    # Each team section (container)
-    containers = driver.find_elements(By.CSS_SELECTOR, "div.flex.flex-col.gap-\\[22px\\]")
 
     for c in containers:
         try:
