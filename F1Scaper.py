@@ -131,13 +131,13 @@ def getTeamLogos():
 
     logos_map = {}
     try:
-        # Wait for a logo or team name to ensure the page is loaded
+        # Wait for a general page load indicator
         WebDriverWait(driver, 20).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "img[src*='mercedes'], img[src*='mclaren']"))
+            EC.presence_of_element_located((By.TAG_NAME, "body"))
         )
-        print("Page loaded, looking for team sections...")
+        print("Page body loaded, waiting for team content...")
 
-        # Target team containers based on the consistent flex layout
+        # Target team containers
         team_containers = WebDriverWait(driver, 20).until(
             EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "span.flex.flex-col.lg\\:flex-row"))
         )
@@ -145,9 +145,18 @@ def getTeamLogos():
 
         for container in team_containers:
             try:
-                # Extract team name (rely on the typography class)
-                team_name = container.find_element(By.CSS_SELECTOR, "p.typography-module_display-1-bold").text.strip()
-                # Extract logo image (rely on the teamlogo class)
+                # Extract team name with flexible selector
+                team_name = None
+                try:
+                    team_name = container.find_element(By.CSS_SELECTOR, "p.typography-module_display-1-bold").text.strip()
+                except:
+                    try:
+                        team_name = container.find_element(By.CSS_SELECTOR, "p, span, h1, h2, h3").text.strip()
+                    except:
+                        print(f"No team name found in container: {container.get_attribute('outerHTML')[:200]}")
+                        continue
+
+                # Extract logo image
                 logo = container.find_element(By.CSS_SELECTOR, "span.Teamlogo-module_teamlogo__1A3j1 img")
                 logo_url = logo.get_attribute("src")
 
