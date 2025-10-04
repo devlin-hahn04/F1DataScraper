@@ -1,4 +1,4 @@
-from F1Scaper import getWDC, getWCC, nextrace, getDriverPhotos, getTeamLogos
+from F1Scaper import getWDC, getWCC, nextrace, getDriverPhotos
 import os
 from supabase import create_client
 from dotenv import load_dotenv
@@ -27,7 +27,7 @@ def save_data():
     wcc = getWCC()
     next_gp = nextrace()
     driver_photos = getDriverPhotos()
-    team_logos= getTeamLogos()
+    
 
     # Sort both dictionaries
     wdc_sorted = sorted(wdc.items(), key=lambda item: item[1]["points"], reverse=True)
@@ -43,8 +43,7 @@ def save_data():
         "drivers_championship": wdc_sorted_list,
         "constructors_championship": wcc_sorted_list,
         "next_race": next_gp,
-        "driver_photos": driver_photos,  # stays as separate dict
-        "team_logos": team_logos
+        "driver_photos": driver_photos,  
     }
 
     save_to_supabase(all_data)

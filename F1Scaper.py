@@ -125,53 +125,5 @@ def getDriverPhotos():
     return driverPhoto_map
 
 
-def getTeamLogos():
-    driver = webdriver.Chrome(options=get_chrome_options())
-    driver.get("https://www.formula1.com/en/teams")
 
-    logos_map = {}
-    try:
-        # Wait for a general page load indicator
-        WebDriverWait(driver, 20).until(
-            EC.presence_of_element_located((By.TAG_NAME, "body"))
-        )
-        print("Page body loaded, waiting for team content...")
-
-        # Target team containers
-        team_containers = WebDriverWait(driver, 20).until(
-            EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "span.flex.flex-col.lg\\:flex-row"))
-        )
-        print(f"Found {len(team_containers)} team containers")
-
-        for container in team_containers:
-            try:
-                # Log the container's HTML for debugging
-                container_html = container.get_attribute('outerHTML')[:500]  # Limit to 500 chars
-                print(f"Processing container: {container_html}")
-
-                # Extract team name with flexible XPath
-                team_name = None
-                try:
-                    team_name = container.find_element(By.XPATH, ".//p[contains(@class, 'typography-module_display')] | .//span | .//h1 | .//h2 | .//h3").text.strip()
-                except:
-                    print(f"No team name found in container: {container_html}")
-                    continue
-
-                # Extract logo image
-                logo = container.find_element(By.CSS_SELECTOR, "span.Teamlogo-module_teamlogo__1A3j1 img")
-                logo_url = logo.get_attribute("src")
-
-                if team_name and logo_url:
-                    logos_map[team_name] = logo_url
-                    print(f"Team: {team_name}, Logo: {logo_url}")
-            except Exception as e:
-                print(f"Error processing team container: {e}")
-                continue
-
-    except TimeoutException as e:
-        print("Timeout waiting for page or containers. Page source:", driver.page_source[:1000])
-        driver.save_screenshot("debug_screenshot.png")
-    finally:
-        driver.quit()
-    return logos_map
 

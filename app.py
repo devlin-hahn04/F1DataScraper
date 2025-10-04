@@ -40,18 +40,6 @@ def driver_photos():
     except Exception as e:
         return Response(json.dumps({"error": str(e)}), content_type="application/json", status=500)
     
-@app.route('/api/teamlogos', methods=['GET'])
-def team_logos():
-    try:
-        logos= getTeamLogos()
-        return Response(json.dumps({"team_logos": logos}), content_type="application/json")
-    except Exception as e:
-        return Response(json.dumps({"error": str(e)}), content_type="application/json", status=500)
-    
-
-
-
-
 
 
 @app.route('/debug', methods=['GET'])
