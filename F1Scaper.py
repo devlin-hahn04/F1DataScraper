@@ -27,7 +27,7 @@ def get_chrome_options():
 # Get World Drivers' Championship standings (with team)
 def getWDC():
     driver = webdriver.Chrome(options=get_chrome_options())
-    driver.get("https://www.formula1.com/en/results/2025/drivers")
+    driver.get("https://www.formula1.com/en/results/2026/drivers")
 
     rows = WebDriverWait(driver, 20).until(
         EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "table tbody tr"))
@@ -59,7 +59,7 @@ def getWDC():
 # Get World Constructors' Championship standings
 def getWCC():
     driver = webdriver.Chrome(options=get_chrome_options())
-    driver.get("https://www.formula1.com/en/results/2025/team")
+    driver.get("https://www.formula1.com/en/results/2026/team")
 
     rows = WebDriverWait(driver, 20).until(
         EC.visibility_of_all_elements_located((By.CSS_SELECTOR, "table tbody tr"))
