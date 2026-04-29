@@ -117,53 +117,60 @@ def get_next_race_details():
 
     # Geographic coordinates for each circuit (for globe visualization)
     circuit_coordinates = {
-        "Bahrain International Circuit": {"lat": 26.0325, "lng": 50.5106, "location": "Sakhir, Bahrain"},
-        "Jeddah Corniche Circuit": {"lat": 21.6319, "lng": 39.1044, "location": "Jeddah, Saudi Arabia"},
-        "Albert Park Circuit": {"lat": -37.8497, "lng": 144.968, "location": "Melbourne, Australia"},
-        "Suzuka International Racing Course": {"lat": 34.8433, "lng": 136.5333, "location": "Suzuka, Japan"},
-        "Shanghai International Circuit": {"lat": 31.3389, "lng": 121.22, "location": "Shanghai, China"},
-        "Miami International Autodrome": {"lat": 25.9581, "lng": -80.2389, "location": "Miami, Florida"},
-        "Imola Circuit": {"lat": 44.3439, "lng": 11.7167, "location": "Imola, Italy"},
-        "Circuit de Monaco": {"lat": 43.7347, "lng": 7.4206, "location": "Monte Carlo, Monaco"},
-        "Circuit de Barcelona-Catalunya": {"lat": 41.57, "lng": 2.26, "location": "Barcelona, Spain"},
-        "Circuit Gilles Villeneuve": {"lat": 45.5, "lng": -73.5228, "location": "Montreal, Canada"},
-        "Red Bull Ring": {"lat": 47.2197, "lng": 14.7647, "location": "Spielberg, Austria"},
-        "Silverstone Circuit": {"lat": 52.0786, "lng": -1.0169, "location": "Silverstone, England"},
-        "Hungaroring": {"lat": 47.5789, "lng": 19.2486, "location": "Budapest, Hungary"},
-        "Circuit de Spa-Francorchamps": {"lat": 50.4372, "lng": 5.9714, "location": "Spa, Belgium"},
-        "Circuit Zandvoort": {"lat": 52.3885, "lng": 4.5409, "location": "Zandvoort, Netherlands"},
-        "Monza Circuit": {"lat": 45.6156, "lng": 9.2811, "location": "Monza, Italy"},
-        "Baku City Circuit": {"lat": 40.3725, "lng": 49.8533, "location": "Baku, Azerbaijan"},
-        "Marina Bay Street Circuit": {"lat": 1.2914, "lng": 103.864, "location": "Singapore"},
-        "Circuit of the Americas": {"lat": 30.1328, "lng": -97.6411, "location": "Austin, Texas"},
-        "Autodromo Hermanos Rodriguez": {"lat": 19.4042, "lng": -99.0908, "location": "Mexico City, Mexico"},
-        "Interlagos Circuit": {"lat": -23.7036, "lng": -46.6997, "location": "Sao Paulo, Brazil"},
-        "Las Vegas Strip Circuit": {"lat": 36.1147, "lng": -115.1728, "location": "Las Vegas, Nevada"},
-        "Lusail International Circuit": {"lat": 25.497, "lng": 51.524, "location": "Lusail, Qatar"},
-        "Yas Marina Circuit": {"lat": 24.4672, "lng": 54.6031, "location": "Abu Dhabi, UAE"},
+        "Bahrain": {"lat": 26.0325, "lng": 50.5106, "location": "Sakhir, Bahrain", "circuit": "Bahrain International Circuit"},
+        "Jeddah": {"lat": 21.6319, "lng": 39.1044, "location": "Jeddah, Saudi Arabia", "circuit": "Jeddah Corniche Circuit"},
+        "Melbourne": {"lat": -37.8497, "lng": 144.968, "location": "Melbourne, Australia", "circuit": "Albert Park Circuit"},
+        "Suzuka": {"lat": 34.8433, "lng": 136.5333, "location": "Suzuka, Japan", "circuit": "Suzuka International Racing Course"},
+        "Shanghai": {"lat": 31.3389, "lng": 121.22, "location": "Shanghai, China", "circuit": "Shanghai International Circuit"},
+        "Miami": {"lat": 25.9581, "lng": -80.2389, "location": "Miami, Florida", "circuit": "Miami International Autodrome"},
+        "Imola": {"lat": 44.3439, "lng": 11.7167, "location": "Imola, Italy", "circuit": "Imola Circuit"},
+        "Monaco": {"lat": 43.7347, "lng": 7.4206, "location": "Monte Carlo, Monaco", "circuit": "Circuit de Monaco"},
+        "Barcelona": {"lat": 41.57, "lng": 2.26, "location": "Barcelona, Spain", "circuit": "Circuit de Barcelona-Catalunya"},
+        "Montreal": {"lat": 45.5, "lng": -73.5228, "location": "Montreal, Canada", "circuit": "Circuit Gilles Villeneuve"},
+        "Spielberg": {"lat": 47.2197, "lng": 14.7647, "location": "Spielberg, Austria", "circuit": "Red Bull Ring"},
+        "Silverstone": {"lat": 52.0786, "lng": -1.0169, "location": "Silverstone, England", "circuit": "Silverstone Circuit"},
+        "Budapest": {"lat": 47.5789, "lng": 19.2486, "location": "Budapest, Hungary", "circuit": "Hungaroring"},
+        "Spa": {"lat": 50.4372, "lng": 5.9714, "location": "Spa, Belgium", "circuit": "Circuit de Spa-Francorchamps"},
+        "Zandvoort": {"lat": 52.3885, "lng": 4.5409, "location": "Zandvoort, Netherlands", "circuit": "Circuit Zandvoort"},
+        "Monza": {"lat": 45.6156, "lng": 9.2811, "location": "Monza, Italy", "circuit": "Monza Circuit"},
+        "Baku": {"lat": 40.3725, "lng": 49.8533, "location": "Baku, Azerbaijan", "circuit": "Baku City Circuit"},
+        "Singapore": {"lat": 1.2914, "lng": 103.864, "location": "Singapore", "circuit": "Marina Bay Street Circuit"},
+        "Austin": {"lat": 30.1328, "lng": -97.6411, "location": "Austin, Texas", "circuit": "Circuit of the Americas"},
+        "Mexico City": {"lat": 19.4042, "lng": -99.0908, "location": "Mexico City, Mexico", "circuit": "Autodromo Hermanos Rodriguez"},
+        "Sao Paulo": {"lat": -23.7036, "lng": -46.6997, "location": "Sao Paulo, Brazil", "circuit": "Interlagos Circuit"},
+        "Las Vegas": {"lat": 36.1147, "lng": -115.1728, "location": "Las Vegas, Nevada", "circuit": "Las Vegas Strip Circuit"},
+        "Lusail": {"lat": 25.497, "lng": 51.524, "location": "Lusail, Qatar", "circuit": "Lusail International Circuit"},
+        "Yas Island": {"lat": 24.4672, "lng": 54.6031, "location": "Abu Dhabi, UAE", "circuit": "Yas Marina Circuit"},
     }
 
     for _, row in schedule.iterrows():
         gp_name = row['EventName']
         round_number = row['RoundNumber']
-        circuit_name = row['EventLocation']
-        event_date = row['EventDate']
+        # Use 'Location' from FastF1 (city/region)
+        location = row['Location']
+        country = row['Country']
+        
+        # Build full location string
+        full_location = f"{location}, {country}" if location != country else location
 
         try:
-            race = fastf1.get_session(year, round_number, 'R')  # 'R' = Race
+            race = fastf1.get_session(year, round_number, 'R')
             race_date = race.date
             if race_date > now:
-                # Get circuit coordinates
-                coords = circuit_coordinates.get(circuit_name, {
-                    "lat": 0, 
-                    "lng": 0, 
-                    "location": circuit_name
-                })
+                # Try to match coordinates by name
+                coords = None
+                for key in circuit_coordinates:
+                    if key.lower() in gp_name.lower() or key.lower() in location.lower():
+                        coords = circuit_coordinates[key]
+                        break
+                
+                if not coords:
+                    coords = circuit_coordinates.get("Miami")
                 
                 return {
                     "name": gp_name,
-                    "circuit": circuit_name,
-                    "location": coords["location"],
+                    "circuit": coords["circuit"],
+                    "location": full_location,
                     "date": race_date.strftime("%B %d, %Y"),
                     "time": race_date.strftime("%H:%M CET"),
                     "lat": coords["lat"],
