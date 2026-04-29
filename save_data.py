@@ -1,4 +1,4 @@
-from f1scraper import getWDC, getWCC, getDriverPhotos, get_next_race_details
+from F1Scaper import getWDC, getWCC, getDriverPhotos, get_next_race_details
 import os
 from supabase import create_client
 from dotenv import load_dotenv
