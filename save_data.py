@@ -1,4 +1,4 @@
-from F1Scaper import getWDC, getWCC, nextrace, getDriverPhotos
+from f1scraper import getWDC, getWCC, getDriverPhotos, get_next_race_details
 import os
 from supabase import create_client
 from dotenv import load_dotenv
@@ -23,9 +23,16 @@ def save_to_supabase(all_data):
 
 
 def save_data():
+    print("Getting WDC data...")
     wdc = getWDC()
+    
+    print("\nGetting WCC data...")
     wcc = getWCC()
-    next_gp = nextrace()
+    
+    print("\nGetting next race details...")
+    next_race_details = get_next_race_details()
+    
+    print("\nGetting driver photos...")
     driver_photos = getDriverPhotos()
     
 
@@ -42,12 +49,19 @@ def save_data():
     all_data = {
         "drivers_championship": wdc_sorted_list,
         "constructors_championship": wcc_sorted_list,
-        "next_race": next_gp,
+        "next_race": next_race_details,  # Now an object instead of a string
         "driver_photos": driver_photos,  
     }
 
     save_to_supabase(all_data)
-
+    print(f"\n✅ Data saved successfully!")
+    print(f"\n📅 Next Race Details:")
+    print(f"   Name: {next_race_details['name']}")
+    print(f"   Circuit: {next_race_details['circuit']}")
+    print(f"   Location: {next_race_details['location']}")
+    print(f"   Date: {next_race_details['date']}")
+    print(f"   Time: {next_race_details['time']}")
+    print(f"   Coordinates: {next_race_details['lat']}, {next_race_details['lng']}")
 
 
 if __name__ == "__main__":
