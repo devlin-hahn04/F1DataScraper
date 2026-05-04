@@ -11,7 +11,7 @@ from datetime import datetime
 import pandas as pd
 
 import requests
-
+# COORDINATES UPDATED: Canadian GP now at Montreal (45.5, -73.5228)
 
 # Setup Selenium Chrome options
 def get_chrome_options():
@@ -115,38 +115,37 @@ def get_next_race_details():
     now = datetime.utcnow()
     schedule = fastf1.get_event_schedule(year)
 
-    # Geographic coordinates for each circuit (for globe visualization)
+    # Geographic coordinates for each circuit - using full Grand Prix names
     circuit_coordinates = {
-        "Bahrain": {"lat": 26.0325, "lng": 50.5106, "location": "Sakhir, Bahrain", "circuit": "Bahrain International Circuit"},
-        "Jeddah": {"lat": 21.6319, "lng": 39.1044, "location": "Jeddah, Saudi Arabia", "circuit": "Jeddah Corniche Circuit"},
-        "Melbourne": {"lat": -37.8497, "lng": 144.968, "location": "Melbourne, Australia", "circuit": "Albert Park Circuit"},
-        "Suzuka": {"lat": 34.8433, "lng": 136.5333, "location": "Suzuka, Japan", "circuit": "Suzuka International Racing Course"},
-        "Shanghai": {"lat": 31.3389, "lng": 121.22, "location": "Shanghai, China", "circuit": "Shanghai International Circuit"},
-        "Miami": {"lat": 25.9581, "lng": -80.2389, "location": "Miami, Florida", "circuit": "Miami International Autodrome"},
-        "Imola": {"lat": 44.3439, "lng": 11.7167, "location": "Imola, Italy", "circuit": "Imola Circuit"},
-        "Monaco": {"lat": 43.7347, "lng": 7.4206, "location": "Monte Carlo, Monaco", "circuit": "Circuit de Monaco"},
-        "Barcelona": {"lat": 41.57, "lng": 2.26, "location": "Barcelona, Spain", "circuit": "Circuit de Barcelona-Catalunya"},
-        "Montreal": {"lat": 45.5, "lng": -73.5228, "location": "Montreal, Canada", "circuit": "Circuit Gilles Villeneuve"},
-        "Spielberg": {"lat": 47.2197, "lng": 14.7647, "location": "Spielberg, Austria", "circuit": "Red Bull Ring"},
-        "Silverstone": {"lat": 52.0786, "lng": -1.0169, "location": "Silverstone, England", "circuit": "Silverstone Circuit"},
-        "Budapest": {"lat": 47.5789, "lng": 19.2486, "location": "Budapest, Hungary", "circuit": "Hungaroring"},
-        "Spa": {"lat": 50.4372, "lng": 5.9714, "location": "Spa, Belgium", "circuit": "Circuit de Spa-Francorchamps"},
-        "Zandvoort": {"lat": 52.3885, "lng": 4.5409, "location": "Zandvoort, Netherlands", "circuit": "Circuit Zandvoort"},
-        "Monza": {"lat": 45.6156, "lng": 9.2811, "location": "Monza, Italy", "circuit": "Monza Circuit"},
-        "Baku": {"lat": 40.3725, "lng": 49.8533, "location": "Baku, Azerbaijan", "circuit": "Baku City Circuit"},
-        "Singapore": {"lat": 1.2914, "lng": 103.864, "location": "Singapore", "circuit": "Marina Bay Street Circuit"},
-        "Austin": {"lat": 30.1328, "lng": -97.6411, "location": "Austin, Texas", "circuit": "Circuit of the Americas"},
-        "Mexico City": {"lat": 19.4042, "lng": -99.0908, "location": "Mexico City, Mexico", "circuit": "Autodromo Hermanos Rodriguez"},
-        "Sao Paulo": {"lat": -23.7036, "lng": -46.6997, "location": "Sao Paulo, Brazil", "circuit": "Interlagos Circuit"},
-        "Las Vegas": {"lat": 36.1147, "lng": -115.1728, "location": "Las Vegas, Nevada", "circuit": "Las Vegas Strip Circuit"},
-        "Lusail": {"lat": 25.497, "lng": 51.524, "location": "Lusail, Qatar", "circuit": "Lusail International Circuit"},
-        "Yas Island": {"lat": 24.4672, "lng": 54.6031, "location": "Abu Dhabi, UAE", "circuit": "Yas Marina Circuit"},
+        "Bahrain Grand Prix": {"lat": 26.0325, "lng": 50.5106, "circuit": "Bahrain International Circuit", "location": "Sakhir, Bahrain"},
+        "Saudi Arabian Grand Prix": {"lat": 21.6319, "lng": 39.1044, "circuit": "Jeddah Corniche Circuit", "location": "Jeddah, Saudi Arabia"},
+        "Australian Grand Prix": {"lat": -37.8497, "lng": 144.968, "circuit": "Albert Park Circuit", "location": "Melbourne, Australia"},
+        "Japanese Grand Prix": {"lat": 34.8433, "lng": 136.5333, "circuit": "Suzuka International Racing Course", "location": "Suzuka, Japan"},
+        "Chinese Grand Prix": {"lat": 31.3389, "lng": 121.22, "circuit": "Shanghai International Circuit", "location": "Shanghai, China"},
+        "Miami Grand Prix": {"lat": 25.9581, "lng": -80.2389, "circuit": "Miami International Autodrome", "location": "Miami, Florida"},
+        "Emilia Romagna Grand Prix": {"lat": 44.3439, "lng": 11.7167, "circuit": "Imola Circuit", "location": "Imola, Italy"},
+        "Monaco Grand Prix": {"lat": 43.7347, "lng": 7.4206, "circuit": "Circuit de Monaco", "location": "Monte Carlo, Monaco"},
+        "Spanish Grand Prix": {"lat": 41.57, "lng": 2.26, "circuit": "Circuit de Barcelona-Catalunya", "location": "Barcelona, Spain"},
+        "Canadian Grand Prix": {"lat": 45.5, "lng": -73.5228, "circuit": "Circuit Gilles Villeneuve", "location": "Montréal, Canada"},
+        "Austrian Grand Prix": {"lat": 47.2197, "lng": 14.7647, "circuit": "Red Bull Ring", "location": "Spielberg, Austria"},
+        "British Grand Prix": {"lat": 52.0786, "lng": -1.0169, "circuit": "Silverstone Circuit", "location": "Silverstone, England"},
+        "Hungarian Grand Prix": {"lat": 47.5789, "lng": 19.2486, "circuit": "Hungaroring", "location": "Budapest, Hungary"},
+        "Belgian Grand Prix": {"lat": 50.4372, "lng": 5.9714, "circuit": "Circuit de Spa-Francorchamps", "location": "Spa, Belgium"},
+        "Dutch Grand Prix": {"lat": 52.3885, "lng": 4.5409, "circuit": "Circuit Zandvoort", "location": "Zandvoort, Netherlands"},
+        "Italian Grand Prix": {"lat": 45.6156, "lng": 9.2811, "circuit": "Monza Circuit", "location": "Monza, Italy"},
+        "Azerbaijan Grand Prix": {"lat": 40.3725, "lng": 49.8533, "circuit": "Baku City Circuit", "location": "Baku, Azerbaijan"},
+        "Singapore Grand Prix": {"lat": 1.2914, "lng": 103.864, "circuit": "Marina Bay Street Circuit", "location": "Singapore"},
+        "United States Grand Prix": {"lat": 30.1328, "lng": -97.6411, "circuit": "Circuit of the Americas", "location": "Austin, Texas"},
+        "Mexico City Grand Prix": {"lat": 19.4042, "lng": -99.0908, "circuit": "Autodromo Hermanos Rodriguez", "location": "Mexico City, Mexico"},
+        "São Paulo Grand Prix": {"lat": -23.7036, "lng": -46.6997, "circuit": "Interlagos Circuit", "location": "Sao Paulo, Brazil"},
+        "Las Vegas Grand Prix": {"lat": 36.1147, "lng": -115.1728, "circuit": "Las Vegas Strip Circuit", "location": "Las Vegas, Nevada"},
+        "Qatar Grand Prix": {"lat": 25.497, "lng": 51.524, "circuit": "Lusail International Circuit", "location": "Lusail, Qatar"},
+        "Abu Dhabi Grand Prix": {"lat": 24.4672, "lng": 54.6031, "circuit": "Yas Marina Circuit", "location": "Abu Dhabi, UAE"},
     }
 
     for _, row in schedule.iterrows():
         gp_name = row['EventName']
         round_number = row['RoundNumber']
-        # Use 'Location' from FastF1 (city/region)
         location = row['Location']
         country = row['Country']
         
@@ -157,20 +156,25 @@ def get_next_race_details():
             race = fastf1.get_session(year, round_number, 'R')
             race_date = race.date
             if race_date > now:
-                # Try to match coordinates by name
-                coords = None
-                for key in circuit_coordinates:
-                    if key.lower() in gp_name.lower() or key.lower() in location.lower():
-                        coords = circuit_coordinates[key]
-                        break
+                # Look up coordinates by the exact Grand Prix name
+                coords = circuit_coordinates.get(gp_name)
                 
                 if not coords:
-                    coords = circuit_coordinates.get("Miami")
+                    # Fallback: try to find by partial match
+                    for key in circuit_coordinates:
+                        if key.lower() in gp_name.lower():
+                            coords = circuit_coordinates[key]
+                            break
+                
+                if not coords:
+                    # Final fallback to Miami
+                    print(f"Warning: No coordinates found for {gp_name}, using Miami as fallback")
+                    coords = circuit_coordinates.get("Miami Grand Prix")
                 
                 return {
                     "name": gp_name,
                     "circuit": coords["circuit"],
-                    "location": full_location,
+                    "location": coords["location"],
                     "date": race_date.strftime("%B %d, %Y"),
                     "time": race_date.strftime("%H:%M CET"),
                     "lat": coords["lat"],
@@ -189,7 +193,7 @@ def get_next_race_details():
         "lat": 0,
         "lng": 0
     }
-
+# hello?
 def getDriverPhotos():
     url = "https://api.openf1.org/v1/drivers?session_key=latest"
     drivers = requests.get(url).json()
