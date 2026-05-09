@@ -1,4 +1,4 @@
-from F1Scaper import getWDC, getWCC, getDriverPhotos, get_next_race_details
+from F1Scaper import getWDC, getWCC, getDriverPhotos, get_next_race_details, get_full_schedule  # Added get_full_schedule
 import os
 from supabase import create_client
 from dotenv import load_dotenv
@@ -35,6 +35,8 @@ def save_data():
     print("\nGetting driver photos...")
     driver_photos = getDriverPhotos()
     
+    print("\nGetting full schedule...")  # NEW
+    full_schedule = get_full_schedule()   # NEW
 
     # Sort both dictionaries
     wdc_sorted = sorted(wdc.items(), key=lambda item: item[1]["points"], reverse=True)
@@ -49,8 +51,9 @@ def save_data():
     all_data = {
         "drivers_championship": wdc_sorted_list,
         "constructors_championship": wcc_sorted_list,
-        "next_race": next_race_details,  # Now an object instead of a string
-        "driver_photos": driver_photos,  
+        "next_race": next_race_details,
+        "driver_photos": driver_photos,
+        "full_schedule": full_schedule,  # NEW - adds full calendar
     }
 
     save_to_supabase(all_data)
@@ -62,6 +65,7 @@ def save_data():
     print(f"   Date: {next_race_details['date']}")
     print(f"   Time: {next_race_details['time']}")
     print(f"   Coordinates: {next_race_details['lat']}, {next_race_details['lng']}")
+    print(f"\n📆 Full Schedule: {len(full_schedule)} races found")  # NEW
 
 
 if __name__ == "__main__":
