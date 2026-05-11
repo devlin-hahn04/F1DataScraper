@@ -198,70 +198,50 @@ def get_next_race_details():
 
 def get_track_layout(season, round_number, race_date, circuit_name):
     """Get track layout coordinates for a specific race from FastF1"""
-    # Try current season first
-    try:
-        session = fastf1.get_session(season, round_number, 'R')
-        session.load()
-        circuit_info = session.get_circuit_info()
-        
-        corners = []
-        if hasattr(circuit_info, 'corners') and circuit_info.corners is not None:
-            for _, corner in circuit_info.corners.iterrows():
-                corner_data = {
-                    "x": float(corner['X']),
-                    "y": float(corner['Y']),
-                }
-                if 'Number' in corner and corner['Number'] is not None:
-                    corner_data["number"] = int(corner['Number'])
-                if 'Letter' in corner and corner['Letter'] is not None:
-                    corner_data["letter"] = corner['Letter']
-                corners.append(corner_data)
-        
-        return {
-            "corners": corners,
-            "rotation": circuit_info.rotation if hasattr(circuit_info, 'rotation') else 0
-        }
-    except:
-        # Search for the same circuit in previous seasons
-        print(f"Searching for {circuit_name} in previous seasons...")
-        
-        for prev_season in range(season - 1, season - 3, -1):  # Try 2025, then 2024
-            try:
-                # Get schedule for previous season
-                prev_schedule = fastf1.get_event_schedule(prev_season)
-                
-                # Find the same circuit in that season
-                for _, row in prev_schedule.iterrows():
-                    if circuit_name.lower() in row['EventName'].lower():
-                        prev_round = row['RoundNumber']
-                        session = fastf1.get_session(prev_season, prev_round, 'R')
-                        session.load()
-                        circuit_info = session.get_circuit_info()
-                        
-                        corners = []
-                        if hasattr(circuit_info, 'corners') and circuit_info.corners is not None:
-                            for _, corner in circuit_info.corners.iterrows():
-                                corner_data = {
-                                    "x": float(corner['X']),
-                                    "y": float(corner['Y']),
-                                }
-                                if 'Number' in corner and corner['Number'] is not None:
-                                    corner_data["number"] = int(corner['Number'])
-                                if 'Letter' in corner and corner['Letter'] is not None:
-                                    corner_data["letter"] = corner['Letter']
-                                corners.append(corner_data)
-                        
-                        print(f"Found {circuit_name} in {prev_season} season")
-                        return {
-                            "corners": corners,
-                            "rotation": circuit_info.rotation if hasattr(circuit_info, 'rotation') else 0
-                        }
-            except Exception as e:
-                print(f"Could not find {circuit_name} in {prev_season}: {e}")
+    # Try to get layout from current or previous seasons
+    for try_season in range(season, season - 3, -1):  # Try 2026, 2025, 2024
+        try:
+            # Try to find the same circuit in this season
+            schedule = fastf1.get_event_schedule(try_season)
+            
+            # Find the round number for this circuit in the target season
+            target_round = None
+            for _, row in schedule.iterrows():
+                if circuit_name.lower() in row['EventName'].lower():
+                    target_round = row['RoundNumber']
+                    break
+            
+            if target_round is None:
                 continue
-        
-        print(f"Could not get track layout for {circuit_name}, skipping")
-        return {"corners": [], "rotation": 0}
+                
+            # Get the session WITHOUT loading full data
+            session = fastf1.get_session(try_season, target_round, 'R')
+            circuit_info = session.get_circuit_info()
+            
+            corners = []
+            if hasattr(circuit_info, 'corners') and circuit_info.corners is not None:
+                for _, corner in circuit_info.corners.iterrows():
+                    corner_data = {
+                        "x": float(corner['X']),
+                        "y": float(corner['Y']),
+                    }
+                    if 'Number' in corner and corner['Number'] is not None:
+                        corner_data["number"] = int(corner['Number'])
+                    if 'Letter' in corner and corner['Letter'] is not None:
+                        corner_data["letter"] = corner['Letter']
+                    corners.append(corner_data)
+            
+            print(f"✅ Got track layout for {circuit_name} from {try_season} season")
+            return {
+                "corners": corners,
+                "rotation": circuit_info.rotation if hasattr(circuit_info, 'rotation') else 0
+            }
+        except Exception as e:
+            continue
+    
+    # If all fails, return empty layout
+    print(f"⚠️ No track layout found for {circuit_name} (will show placeholder)")
+    return {"corners": [], "rotation": 0}
 
 def get_full_schedule():
     # Set up cache
