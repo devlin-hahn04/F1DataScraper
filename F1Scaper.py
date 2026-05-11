@@ -195,54 +195,7 @@ def get_next_race_details():
         "lng": 0
     }
 
-
-def get_track_layout(season, round_number, race_date, circuit_name):
-    """Get track layout coordinates for a specific race from FastF1"""
-    # Try to get layout from current or previous seasons
-    for try_season in range(season, season - 3, -1):  # Try 2026, 2025, 2024
-        try:
-            # Try to find the same circuit in this season
-            schedule = fastf1.get_event_schedule(try_season)
-            
-            # Find the round number for this circuit in the target season
-            target_round = None
-            for _, row in schedule.iterrows():
-                if circuit_name.lower() in row['EventName'].lower():
-                    target_round = row['RoundNumber']
-                    break
-            
-            if target_round is None:
-                continue
-                
-            # Get the session WITHOUT loading full data
-            session = fastf1.get_session(try_season, target_round, 'R')
-            circuit_info = session.get_circuit_info()
-            
-            corners = []
-            if hasattr(circuit_info, 'corners') and circuit_info.corners is not None:
-                for _, corner in circuit_info.corners.iterrows():
-                    corner_data = {
-                        "x": float(corner['X']),
-                        "y": float(corner['Y']),
-                    }
-                    if 'Number' in corner and corner['Number'] is not None:
-                        corner_data["number"] = int(corner['Number'])
-                    if 'Letter' in corner and corner['Letter'] is not None:
-                        corner_data["letter"] = corner['Letter']
-                    corners.append(corner_data)
-            
-            print(f"✅ Got track layout for {circuit_name} from {try_season} season")
-            return {
-                "corners": corners,
-                "rotation": circuit_info.rotation if hasattr(circuit_info, 'rotation') else 0
-            }
-        except Exception as e:
-            continue
-    
-    # If all fails, return empty layout
-    print(f"⚠️ No track layout found for {circuit_name} (will show placeholder)")
-    return {"corners": [], "rotation": 0}
-
+# NEW FUNCTION: Get full F1 schedule for the entire season
 def get_full_schedule():
     # Set up cache
     if not os.path.exists('cache'):
@@ -296,9 +249,6 @@ def get_full_schedule():
             race = fastf1.get_session(year, round_number, 'R')
             race_date = race.date
             
-            # Get track layout for this race
-            track_layout = get_track_layout(year, round_number, race_date, gp_name)
-            
             # Look up coordinates
             coords = circuit_coordinates.get(gp_name)
             
@@ -320,8 +270,7 @@ def get_full_schedule():
                 "date": race_date.strftime("%B %d, %Y"),
                 "time": race_date.strftime("%H:%M CET"),
                 "lat": coords["lat"],
-                "lng": coords["lng"],
-                "track_layout": track_layout  # NEW: Add track layout data
+                "lng": coords["lng"]
             })
         except Exception as e:
             print(f"Error getting session for {gp_name}: {e}")
@@ -345,4 +294,3 @@ def getDriverPhotos():
             driverPhoto_map[last_name] = d["headshot_url"]
 
     return driverPhoto_map
-
