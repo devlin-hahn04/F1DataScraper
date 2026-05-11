@@ -200,10 +200,10 @@ def get_track_layout(season, round_number):
     """Get track layout coordinates for a specific race from FastF1"""
     try:
         session = fastf1.get_session(season, round_number, 'R')
-        session.load()
+        # No session.load() needed - circuit_info is available directly
         circuit_info = session.get_circuit_info()
         
-        # Get corners data
+        # Get corners data (X, Y coordinates)
         corners = []
         if hasattr(circuit_info, 'corners') and circuit_info.corners is not None:
             for _, corner in circuit_info.corners.iterrows():
@@ -215,10 +215,6 @@ def get_track_layout(season, round_number):
                     corner_data["number"] = int(corner['Number'])
                 if 'Letter' in corner and corner['Letter'] is not None:
                     corner_data["letter"] = corner['Letter']
-                if 'Angle' in corner and corner['Angle'] is not None:
-                    corner_data["angle"] = float(corner['Angle'])
-                if 'Distance' in corner and corner['Distance'] is not None:
-                    corner_data["distance"] = float(corner['Distance'])
                 corners.append(corner_data)
         
         return {
