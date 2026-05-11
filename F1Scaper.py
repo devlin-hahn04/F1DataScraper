@@ -195,7 +195,40 @@ def get_next_race_details():
         "lng": 0
     }
 
-# NEW FUNCTION: Get full F1 schedule for the entire season
+
+def get_track_layout(season, round_number):
+    """Get track layout coordinates for a specific race from FastF1"""
+    try:
+        session = fastf1.get_session(season, round_number, 'R')
+        session.load()
+        circuit_info = session.get_circuit_info()
+        
+        # Get corners data
+        corners = []
+        if hasattr(circuit_info, 'corners') and circuit_info.corners is not None:
+            for _, corner in circuit_info.corners.iterrows():
+                corner_data = {
+                    "x": float(corner['X']),
+                    "y": float(corner['Y']),
+                }
+                if 'Number' in corner and corner['Number'] is not None:
+                    corner_data["number"] = int(corner['Number'])
+                if 'Letter' in corner and corner['Letter'] is not None:
+                    corner_data["letter"] = corner['Letter']
+                if 'Angle' in corner and corner['Angle'] is not None:
+                    corner_data["angle"] = float(corner['Angle'])
+                if 'Distance' in corner and corner['Distance'] is not None:
+                    corner_data["distance"] = float(corner['Distance'])
+                corners.append(corner_data)
+        
+        return {
+            "corners": corners,
+            "rotation": circuit_info.rotation if hasattr(circuit_info, 'rotation') else 0
+        }
+    except Exception as e:
+        print(f"Error getting track layout for round {round_number}: {e}")
+        return {"corners": [], "rotation": 0}
+
 def get_full_schedule():
     # Set up cache
     if not os.path.exists('cache'):
@@ -249,6 +282,9 @@ def get_full_schedule():
             race = fastf1.get_session(year, round_number, 'R')
             race_date = race.date
             
+            # Get track layout for this race
+            track_layout = get_track_layout(year, round_number)
+            
             # Look up coordinates
             coords = circuit_coordinates.get(gp_name)
             
@@ -270,7 +306,8 @@ def get_full_schedule():
                 "date": race_date.strftime("%B %d, %Y"),
                 "time": race_date.strftime("%H:%M CET"),
                 "lat": coords["lat"],
-                "lng": coords["lng"]
+                "lng": coords["lng"],
+                "track_layout": track_layout  # NEW: Add track layout data
             })
         except Exception as e:
             print(f"Error getting session for {gp_name}: {e}")
@@ -294,3 +331,4 @@ def getDriverPhotos():
             driverPhoto_map[last_name] = d["headshot_url"]
 
     return driverPhoto_map
+
